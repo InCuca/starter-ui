@@ -1,10 +1,7 @@
 <template>
   <div>
     <div>
-      <v-form 
-        ref="form" 
-        v-model="valid"
-      >
+      <v-form ref="form" v-model="valid">
         <v-container>
           <v-row>
             <v-col cols="12" md="6">
@@ -18,12 +15,11 @@
               <div class="d-flex justify-end">
                 <v-switch v-model="question.isMeta" label="Is Meta"></v-switch>
               </div>
-              
 
               <v-row v-if="question.isMeta">
                 <v-col cols="12" md="12">
                   <v-select
-                    :items="questions.map( ({ propertyName }) => propertyName)"
+                    :items="questions.map(({ propertyName }) => propertyName)"
                     v-model="question.metaParent"
                     label="Tag Parent"
                     :rules="metaRules"
@@ -63,7 +59,6 @@
                   <div class="d-flex justify-end">
                     <v-btn @click="addOption()">ADD OPTION</v-btn>
                   </div>
-                  
                 </v-col>
               </v-row>
 
@@ -80,13 +75,20 @@
                 <v-btn @click="addQuestion()">SAVE QUESTION </v-btn>
               </div>
             </v-col>
-            <v-col>
-                <div v-if="questions.length > 0">
-                  <div v-for="(q, index) in questions" :key="index">
-                    {{ q.propertyName }} <v-btn @click="removeQuestion(q)"> X </v-btn>
-                  </div>
-                </div>
-            </v-col>            
+            <v-col class="d-flex justify-center" v-if="questions.length > 0">
+              <v-btn
+                v-for="(q, index) in questions"
+                :key="index"
+                class="ma-2"
+                color="red"
+                dark
+                @click="removeQuestion(q)"
+              >
+                {{ q.propertyName }}
+                <v-icon dark right> mdi-minus-circle </v-icon>
+              </v-btn>
+              
+            </v-col>
           </v-row>
         </v-container>
       </v-form>
@@ -100,9 +102,16 @@ import { TYPES, SELECT, CHECKBOX } from "../helpers/types.js";
 
 export default {
   name: "StageBuilder",
+  props: {
+    saveStage: Function,
+    stage: Object,
+  },
   computed: {
     types() {
       return TYPES;
+    },
+    stageStates() {
+      return this.stage.questions === this.questions;
     },
   },
   watch: {
@@ -110,23 +119,25 @@ export default {
       const arr = [SELECT, CHECKBOX];
       this.hasOptions = arr.find((option) => option === value);
     },
+    "questions": function (value) {
+      this.stage.questions = this.questions;
+      this.saveStage(this.stage);
+    },
   },
   data() {
     return {
       tagRules: [
-        v => !!v || 'Tag is required',
-        v => (v && v.length >= 3) || 'Tag must be less than 3 characters',
+        (v) => !!v || "Tag is required",
+        (v) => (v && v.length >= 3) || "Tag must be less than 3 characters",
       ],
       questionTypeRules: [
-        v => (v && v.length <= 20) || 'Question type is required',
+        (v) => (v && v.length <= 20) || "Question type is required",
       ],
       questionRules: [
-        v => !!v || 'Tag is required',
-        v => (v && v.length <= 120) || 'Tag must be less than 120 characters',
+        (v) => !!v || "Tag is required",
+        (v) => (v && v.length <= 120) || "Tag must be less than 120 characters",
       ],
-      metaRules: [
-        v => !!v ||'Meta Parent is required',
-      ],
+      metaRules: [(v) => !!v || "Meta Parent is required"],
       valid: false,
       questions: [],
       hasOptions: false,
@@ -149,13 +160,10 @@ export default {
 
       if (!this.validate()) return;
 
-      
-
       if (!repeat) {
         let newQuestion = { ...this.question };
         this.questions.push(newQuestion);
 
-        // this.clearQuestion();
         this.reset();
       }
     },
@@ -189,11 +197,11 @@ export default {
       this.isMeta = false;
       this.metaParent = "";
     },
-    validate () {
-        return this.$refs.form.validate();
+    validate() {
+      return this.$refs.form.validate();
     },
-    reset () {
-        return this.$refs.form.reset();
+    reset() {
+      return this.$refs.form.reset();
     },
   },
 };

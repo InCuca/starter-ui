@@ -1,48 +1,40 @@
 <template>
   <v-container>
     <v-row class="text-center my-10">
-
       <h1> Starter Manager </h1>
-
-      <!-- <v-row v-if="!currentStep.answer"> 
-           <v-text-field
-            v-model="currentStep.answer"
-            :label="label"
-            required
-            @input="$v.name.$touch()"
-            @blur="$v.name.$touch()"
-          ></v-text-field>
-      </v-row> -->  
-
     </v-row>
-    <v-row class="mock" align="center" justify="center">
-      <stages :stages="stages" style="width: 100%;">
+
+    <v-row v-if="stages.length === 0" align="center" justify="center">
+      <stage-plan :save-handler="saveHandler" style="width: 100%;"></stage-plan>
+    </v-row>
+
+    <v-row v-if="stages.length > 0" align="center" justify="center">
+      <stages :stages="stages" :save-stage="saveStage" style="width: 100%;">
       </stages>
     </v-row>
-    
   </v-container>
 </template>
 
 <script>
-  // const types = ["One", "Two", "Three"];
+  import StagePlan from './StagePlan.vue';
   import Stages from "./Stages.vue";
+
+  import { mapActions, mapGetters } from "vuex";
 
   export default {
     name: 'Manager',
     data() {
-      return {
-        stages:[ 
-          { name: 'one', sequence: 1},
-          { name: 'two', sequence: 2},
-          { name: 'three', sequence: 3},
-          ]
-      }
+      return {}
+    },
+    computed: {
+      ...mapGetters('stage', ['stages', 'handler'])
     },
     components: {
-      Stages
+      Stages,
+        StagePlan
     },
-    created() {
+    methods: {
+      ...mapActions('stage', ['saveHandler', 'saveStage']),
     }
-
   }
 </script>
