@@ -9,7 +9,7 @@
     </v-row>
 
     <v-row v-if="stages.length > 0" align="center" justify="center">
-      <stages :stages="stages" :save-stage="saveStage" style="width: 100%;">
+      <stages :stages="stages" :finish="finish" :save-stage="saveStage" style="width: 100%;">
       </stages>
     </v-row>
   </v-container>
@@ -34,7 +34,7 @@
         StagePlan
     },
     methods: {
-      ...mapActions('stage', ['saveHandler', 'saveStage']),
+      ...mapActions('stage', ['saveHandler', 'saveStage', 'finish']),
     }
   }
 </script>
