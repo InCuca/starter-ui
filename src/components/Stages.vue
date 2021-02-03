@@ -38,7 +38,8 @@ export default {
   components: { StageBuilder },
   props: {
     stages: Array,
-    saveStage: Function
+    saveStage: Function,
+    finish: Function,
   },
   name: "Stages",
   data() {
@@ -57,9 +58,6 @@ export default {
     prevElement() {
       this.el -= 1;
     },
-    finish(){
-      //todo
-    }
   },
   created() {
     this.step = 1;
